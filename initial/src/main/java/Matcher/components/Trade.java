@@ -2,13 +2,16 @@ package Matcher.components;
 
 import Matcher.common.IdTimeable;
 
+import javax.validation.constraints.Min;
 import java.sql.Timestamp;
 
 public class Trade implements IdTimeable {
     private final String buyer;
     private final String seller;
-    private final double volume;
-    private final double price;
+    @Min(1)
+    private final int volume;
+    @Min(1)
+    private final int price;
     private final Timestamp timestamp;
     private final String id;
 
@@ -17,7 +20,7 @@ public class Trade implements IdTimeable {
                 Math.min(buyOrder.getVolume(), sellOrder.getVolume()), sellOrder.getPrice());
     }
 
-    public Trade(String buyer, String seller, double volume, double price) {
+    public Trade(String buyer, String seller, int volume, int price) {
         this.buyer = buyer;
         this.seller = seller;
         this.volume = volume;
@@ -35,11 +38,11 @@ public class Trade implements IdTimeable {
         return seller;
     }
 
-    public double getVolume() {
+    public int getVolume() {
         return volume;
     }
 
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 

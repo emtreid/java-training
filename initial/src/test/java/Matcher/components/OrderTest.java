@@ -4,14 +4,15 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.junit.Test;
 import org.junit.Assert;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 
 
 public class OrderTest {
     String username = "user";
     String action = "Buy";
-    double volume = 1;
-    double price = 5.2;
+    int volume = 2;
+    int price = 52;
 
     @Test
     public void createOrder() {
@@ -23,8 +24,8 @@ public class OrderTest {
         Order order = new Order(username, action, volume, price);
         Assert.assertEquals(order.getUsername(), username);
         Assert.assertEquals(order.getAction(), action);
-        Assert.assertEquals(order.getVolume(), volume, 1e-5);
-        Assert.assertEquals(order.getPrice(), price, 1e-5);
+        Assert.assertEquals(order.getVolume(), volume);
+        Assert.assertEquals(order.getPrice(), price);
         Assert.assertNotNull(order.getTimestamp());
         Assert.assertNotNull(order.getId());
     }
@@ -33,7 +34,12 @@ public class OrderTest {
     public void setOrderVolume() {
         Order order = new Order(username, action, volume, price);
         order.setVolume(1);
-        Assert.assertEquals(order.getVolume(), 1, 1e-5);
+        Assert.assertEquals(order.getVolume(), 1);
+    }
+
+    @Test
+    public void validatePriceVolume() {
+        Order noPriceOrder = new Order(username, action, volume, 0);
     }
 
 

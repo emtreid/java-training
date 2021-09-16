@@ -11,10 +11,10 @@ import java.util.ArrayList;
 public class OrderBookTest {
     Order order1 = new Order("user1", "Buy", 5, 1);
     Order order2 = new Order("user1", "Buy", 0, 2);
-    Order order3 = new Order("user1", "Sell", 10, 4.5);
+    Order order3 = new Order("user1", "Sell", 10, 5);
     Order order4 = new Order("user2", "Buy", 2, 3);
     Order order5 = new Order("user2", "Sell", 2, 4);
-    Order order6 = new Order("user3", "Sell", 2, 5);
+    Order order6 = new Order("user3", "Sell", 2, 6);
 
     @Test
     public void createOrderBook() {
@@ -56,7 +56,7 @@ public class OrderBookTest {
         orderBook.addOrder(order5);
         orderBook.addOrder(order6);
         orderBook.sortOrders();
-        Assert.assertEquals(orderBook.getBuy().get(0).getPrice(), 3, 1e-5);
-        Assert.assertEquals(orderBook.getSell().get(0).getPrice(), 4, 1e-5);
+        Assert.assertEquals(orderBook.getBuy().get(0).getPrice(), 3);
+        Assert.assertEquals(orderBook.getSell().get(0).getPrice(), 4);
     }
 }

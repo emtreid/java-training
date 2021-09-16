@@ -22,6 +22,8 @@ public class AggregatedOrderBookTest {
         orderBook.addOrder(order5);
         orderBook.addOrder(order6);
         AggregatedOrderBook aggregatedOrderBook = new AggregatedOrderBook(orderBook);
-        Assert.assertEquals(aggregatedOrderBook.getSell().get(order3.getPrice()), order3.getVolume() + order5.getVolume(), 1e-5);
+        Assert.assertNotNull(aggregatedOrderBook.getSell().get(order3.getPrice()));
+
+        Assert.assertEquals((long)aggregatedOrderBook.getSell().get(order3.getPrice()), order3.getVolume() + order5.getVolume());
     }
 }

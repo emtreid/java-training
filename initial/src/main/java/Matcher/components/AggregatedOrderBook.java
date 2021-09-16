@@ -9,19 +9,19 @@ import java.util.Comparator;
 import java.util.TreeMap;
 
 public class AggregatedOrderBook {
-    private TreeMap<Double, Double> buy;
-    private TreeMap<Double, Double> sell;
+    private TreeMap<Integer, Integer> buy;
+    private TreeMap<Integer, Integer> sell;
 
     public AggregatedOrderBook(OrderBook orderBook) {
         buy = populateBook(orderBook.getBuy());
         sell = populateBook(orderBook.getSell());
     }
 
-    public TreeMap<Double, Double> getBuy() {
+    public TreeMap<Integer, Integer> getBuy() {
         return buy;
     }
 
-    public TreeMap<Double, Double> getSell() {
+    public TreeMap<Integer, Integer> getSell() {
         return sell;
     }
 
@@ -30,25 +30,23 @@ public class AggregatedOrderBook {
         sell = populateBook(orderBook.getSell());
     }
 
-    private TreeMap<Double, Double> populateBook(ArrayList<Order> orderList) {
-        TreeMap<Double, Double> newMap = new TreeMap<Double, Double>();
-        ArrayList<BigDecimal> prices = new ArrayList<BigDecimal>();
-        ArrayList<Double> volumes = new ArrayList<Double>();
+    private TreeMap<Integer, Integer> populateBook(ArrayList<Order> orderList) {
+        TreeMap<Integer, Integer> newMap = new TreeMap<Integer, Integer>();
+        ArrayList<Integer> prices = new ArrayList<Integer>();
+        ArrayList<Integer> volumes = new ArrayList<Integer>();
         for (Order order : orderList
         ) {
-            BigDecimal decPrice = BigDecimal.valueOf(order.getPrice());
-            BigDecimal roundedPrice = decPrice.setScale(2, RoundingMode.HALF_UP);
-            int priceIndex = prices.indexOf(roundedPrice);
+            int priceIndex = prices.indexOf(order.getPrice());
             if (priceIndex == -1) {
-                prices.add(roundedPrice);
+                prices.add(order.getPrice());
                 volumes.add(order.getVolume());
             } else {
                 volumes.set(priceIndex, volumes.get(priceIndex) + order.getVolume());
             }
         }
         for (int i = 0; i < prices.size(); i++) {
-            if (volumes.get(i) > 1e-5)
-                newMap.put(prices.get(i).doubleValue(), volumes.get(i));
+            if (volumes.get(i) > 0)
+                newMap.put(prices.get(i), volumes.get(i));
         }
         return newMap;
     }

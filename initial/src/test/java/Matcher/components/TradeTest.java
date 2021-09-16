@@ -6,8 +6,8 @@ import org.junit.Test;
 public class TradeTest {
     String buyer = "buyer";
     String seller = "seller";
-    double volume = 1;
-    double price = 1.5;
+    int volume = 1;
+    int price = 2;
 
     @Test
     public void createTrade() {
@@ -19,8 +19,8 @@ public class TradeTest {
         Trade trade = new Trade(buyer, seller, volume, price);
         Assert.assertEquals(trade.getBuyer(), buyer);
         Assert.assertEquals(trade.getSeller(), seller);
-        Assert.assertEquals(trade.getVolume(), volume, 1e-5);
-        Assert.assertEquals(trade.getPrice(), price, 1e-5);
+        Assert.assertEquals(trade.getVolume(), volume);
+        Assert.assertEquals(trade.getPrice(), price);
         Assert.assertNotNull(trade.getTimestamp());
         Assert.assertNotNull(trade.getId());
     }

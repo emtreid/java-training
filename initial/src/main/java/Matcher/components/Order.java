@@ -10,12 +10,14 @@ import java.sql.Timestamp;
 public class Order implements IdTimeable {
     private final String username;
     private final String action;
-    private double volume;
-    private final double price;
+    @Min(0)
+    private int volume; //volume*10
+    @Min(1)
+    private final int price; //price*10
     private final Timestamp timestamp;
     private final String id;
 
-    public Order(String username, String action, double volume, double price) {
+    public Order(String username, String action, int volume, int price) {
         this.username = username;
         this.action = action;
         this.volume = volume;
@@ -32,11 +34,11 @@ public class Order implements IdTimeable {
         return action;
     }
 
-    public double getVolume() {
+    public int getVolume() {
         return volume;
     }
 
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 
@@ -48,7 +50,7 @@ public class Order implements IdTimeable {
         return id;
     }
 
-    public void setVolume(double newVolume) {
+    public void setVolume(int newVolume) {
         volume = newVolume;
     }
 }

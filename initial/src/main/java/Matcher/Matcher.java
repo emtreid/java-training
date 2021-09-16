@@ -38,7 +38,7 @@ public class Matcher {
         return orderBook;
     }
 
-    public void createAccount(String username, double startingGBP, double startingBTC) {
+    public void createAccount(String username, int startingGBP, int startingBTC) {
         Account newAccount = new Account(username, startingGBP, startingBTC);
         if (getAccount(username) == null)
             accountList.put(username, newAccount);
@@ -124,16 +124,18 @@ public class Matcher {
                 // Create and push trade, update volumes of new and previous orders, until one or both are exhausted
                 Order buyOrder = order.getAction().equals("Buy") ? order : previousOrder;
                 Order sellOrder = order.getAction().equals("Sell") ? order : previousOrder;
-                Trade newTrade = new Trade(buyOrder, sellOrder);
-                Account buyAccount = getAccount(newTrade.getBuyer());
-                Account sellAccount = getAccount(newTrade.getSeller());
-                buyAccount.creditAccount(newTrade, buyOrder.getPrice());
-                sellAccount.creditAccount(newTrade, buyOrder.getPrice());
-                addTrade(newTrade);
-                order.setVolume(order.getVolume() - newTrade.getVolume());
-                previousOrder.setVolume(previousOrder.getVolume() - newTrade.getVolume());
-                if (order.getVolume() < 1e-5) {
-                    break;
+                if (buyOrder.getPrice() >= sellOrder.getPrice()) {
+                    Trade newTrade = new Trade(buyOrder, sellOrder);
+                    Account buyAccount = getAccount(newTrade.getBuyer());
+                    Account sellAccount = getAccount(newTrade.getSeller());
+                    buyAccount.creditAccount(newTrade, buyOrder.getPrice());
+                    sellAccount.creditAccount(newTrade, buyOrder.getPrice());
+                    addTrade(newTrade);
+                    order.setVolume(order.getVolume() - newTrade.getVolume());
+                    previousOrder.setVolume(previousOrder.getVolume() - newTrade.getVolume());
+                    if (order.getVolume() < 1e-5) {
+                        break;
+                    }
                 }
             }
         }
