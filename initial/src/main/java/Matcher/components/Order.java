@@ -1,8 +1,9 @@
 package Matcher.components;
 
-
 import Matcher.common.IdTimeable;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
