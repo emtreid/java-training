@@ -40,6 +40,8 @@ public class OrderTest {
     @Test
     public void validatePriceVolume() {
         Order noPriceOrder = new Order(username, action, volume, 0);
+        System.out.println(noPriceOrder.getPrice());
+        Assert.assertNotNull(noPriceOrder);
     }
 
 

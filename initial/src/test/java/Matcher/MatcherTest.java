@@ -50,7 +50,7 @@ public class MatcherTest {
         matcher.processOrder(order3);
         System.out.println(matcher.getOrderBook().getBuy().size());
         Assert.assertEquals(matcher.getOrderBook().getBuy().size(), 2);
-        matcher.cancelOrder(order3.getId());
+        matcher.cancelOrder(order3.getId(), false);
         Assert.assertEquals(matcher.getOrderBook().getBuy().size(), 1);
     }
 
@@ -61,7 +61,7 @@ public class MatcherTest {
         matcher.processOrder(order1);
         Assert.assertEquals(matcher.getAccount("Elliott").getBalanceGBP(),
                 1000 - (long) order1.getPrice() * order1.getVolume());
-        matcher.cancelOrder(order1.getId());
+        matcher.cancelOrder(order1.getId(), false);
         Assert.assertEquals(matcher.getAccount("Elliott").getBalanceGBP(),
                 1000);
     }

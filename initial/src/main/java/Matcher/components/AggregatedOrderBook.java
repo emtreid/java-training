@@ -2,38 +2,35 @@ package Matcher.components;
 
 import Matcher.components.OrderBook.OrderBook;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.TreeMap;
 
 public class AggregatedOrderBook {
-    private TreeMap<Integer, Integer> buy;
-    private TreeMap<Integer, Integer> sell;
+    private TreeMap<Long, Long> Buy;
+    private TreeMap<Long, Long> Sell;
 
     public AggregatedOrderBook(OrderBook orderBook) {
-        buy = populateBook(orderBook.getBuy());
-        sell = populateBook(orderBook.getSell());
+        Buy = populateBook(orderBook.getBuy());
+        Sell = populateBook(orderBook.getSell());
     }
 
-    public TreeMap<Integer, Integer> getBuy() {
-        return buy;
+    public TreeMap<Long, Long> getBuy() {
+        return Buy;
     }
 
-    public TreeMap<Integer, Integer> getSell() {
-        return sell;
+    public TreeMap<Long, Long> getSell() {
+        return Sell;
     }
 
     public void updateBook(OrderBook orderBook) {
-        buy = populateBook(orderBook.getBuy());
-        sell = populateBook(orderBook.getSell());
+        Buy = populateBook(orderBook.getBuy());
+        Sell = populateBook(orderBook.getSell());
     }
 
-    private TreeMap<Integer, Integer> populateBook(ArrayList<Order> orderList) {
-        TreeMap<Integer, Integer> newMap = new TreeMap<Integer, Integer>();
-        ArrayList<Integer> prices = new ArrayList<Integer>();
-        ArrayList<Integer> volumes = new ArrayList<Integer>();
+    private TreeMap<Long, Long> populateBook(ArrayList<Order> orderList) {
+        TreeMap<Long, Long> newMap = new TreeMap<Long, Long>();
+        ArrayList<Long> prices = new ArrayList<Long>();
+        ArrayList<Long> volumes = new ArrayList<Long>();
         for (Order order : orderList
         ) {
             int priceIndex = prices.indexOf(order.getPrice());

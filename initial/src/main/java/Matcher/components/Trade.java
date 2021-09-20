@@ -9,9 +9,9 @@ public class Trade implements IdTimeable {
     private final String buyer;
     private final String seller;
     @Min(1)
-    private final int volume;
+    private final long volume;
     @Min(1)
-    private final int price;
+    private final long price;
     private final Timestamp timestamp;
     private final String id;
 
@@ -20,7 +20,7 @@ public class Trade implements IdTimeable {
                 Math.min(buyOrder.getVolume(), sellOrder.getVolume()), sellOrder.getPrice());
     }
 
-    public Trade(String buyer, String seller, int volume, int price) {
+    public Trade(String buyer, String seller, long volume, long price) {
         this.buyer = buyer;
         this.seller = seller;
         this.volume = volume;
@@ -38,11 +38,11 @@ public class Trade implements IdTimeable {
         return seller;
     }
 
-    public int getVolume() {
+    public long getVolume() {
         return volume;
     }
 
-    public int getPrice() {
+    public long getPrice() {
         return price;
     }
 

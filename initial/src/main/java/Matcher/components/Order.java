@@ -1,29 +1,38 @@
 package Matcher.components;
 
+import Matcher.DTO.InOrderDTO;
+import Matcher.DTO.OutOrderDTO;
 import Matcher.common.IdTimeable;
 
-import javax.validation.constraints.DecimalMin;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.math.BigDecimal;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.sql.Timestamp;
 
 public class Order implements IdTimeable {
+    @NotNull
     private final String username;
+    @Pattern(regexp = "Buy|Sell")
     private final String action;
     @Min(0)
-    private int volume; //volume*10
+    private long volume; //volume*10
     @Min(1)
-    private final int price; //price*10
+    private final long price; //price*100
     private final Timestamp timestamp;
     private final String id;
 
-    public Order(String username, String action, int volume, int price) {
+    public Order(String username, String action, @Valid long volume, @Valid long price) {
         this.username = username;
         this.action = action;
         this.volume = volume;
         this.price = price;
         timestamp = new Timestamp(System.currentTimeMillis());
-        id = username + timestamp.toString() + Math.random();
+        id = username + timestamp + Math.random();
+    }
+
+    public Order(OutOrderDTO inOrderDTO) {
+        this(inOrderDTO.getUsername(), inOrderDTO.getAction(), inOrderDTO.getVolume(), inOrderDTO.getPrice());
     }
 
     public String getUsername() {
@@ -34,11 +43,11 @@ public class Order implements IdTimeable {
         return action;
     }
 
-    public int getVolume() {
+    public long getVolume() {
         return volume;
     }
 
-    public int getPrice() {
+    public long getPrice() {
         return price;
     }
 
@@ -50,7 +59,7 @@ public class Order implements IdTimeable {
         return id;
     }
 
-    public void setVolume(int newVolume) {
+    public void setVolume(long newVolume) {
         volume = newVolume;
     }
 }

@@ -1,44 +1,43 @@
 package Matcher;
 
-import Matcher.components.Account;
+import Matcher.components.Account.Account;
 import Matcher.components.Order;
 import Matcher.components.OrderBook.OrderBook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 public class HelloController {
 
-	Matcher matcher = new Matcher();
+    @Autowired
+    public HelloController(Matcher matcher) {
+        this.matcher = matcher;
+    }
 
-	@GetMapping("/")
-	public String index() {
-		return "Greetings from Spring Boot!";
-	}
+    private final Matcher matcher;
 
-	@GetMapping("/orders")
-	public OrderBook getOrderBook () {
-		OrderBook orderBook = matcher.getOrderBook();
-		return orderBook;
-	}
+    @GetMapping("/")
+    public String index() {
+        return "Now accepting orders...";
+    }
 
-	@PostMapping("/user")
-	public Account postAccount(@RequestParam String username, int startingGBP, int startingBTC){
-		matcher.createAccount(username, startingGBP, startingBTC);
-		return matcher.getAccount(username);
-	}
+    @GetMapping("/orders")
+    public OrderBook getOrderBook() {
+        return matcher.getOrderBook();
+    }
 
-	@PostMapping("/order")
-	public Order postOrder (@RequestParam String username, String action, int volume, int price) {
-		Order order = new Order(username, action, volume, price);
-		matcher.processOrder(order);
-		return order;
-	}
+    @PostMapping("/user")
+    public Account postAccount(@RequestBody @Valid Account account) {
+        matcher.createAccount(account.getUsername(), account.getBalanceGBP(), account.getBalanceBTC());
+        return matcher.getAccount(account.getUsername());
+    }
 
-}
+    @PostMapping("/order")
+    public Order postOrder(@RequestHeader int token, @RequestBody @Valid Order order) {
+        matcher.processOrder(token, order);
+        return order;
+    }
 
-class NewOrder {
-	String username;
-	String action;
-	double volume;
-	double price;
 }

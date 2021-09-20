@@ -1,18 +1,26 @@
-package Matcher.components;
+package Matcher.components.Account;
 
+import Matcher.components.Order;
 import Matcher.components.OrderBook.OrderBook;
+import Matcher.components.Trade;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class Account {
+    @NotNull
+    @Size(min = 1)
     private final String username;
+    @NotNull
     @Min(0)
-    private int balanceGBP;// balance*100
+    private long balanceGBP;// balance*100
+    @NotNull
     @Min(0)
-    private int balanceBTC;// balance*10
+    private long balanceBTC;// balance*10
     private OrderBook privateOrderBook = new OrderBook();
 
-    public Account(String username, int startingGBP, int startingBTC) {
+    public Account(String username, long startingGBP, long startingBTC) {
         this.username = username;
         balanceGBP = startingGBP;
         balanceBTC = startingBTC;
@@ -22,11 +30,11 @@ public class Account {
         return username;
     }
 
-    public int getBalanceGBP() {
+    public long getBalanceGBP() {
         return balanceGBP;
     }
 
-    public int getBalanceBTC() {
+    public long getBalanceBTC() {
         return balanceBTC;
     }
 
@@ -34,46 +42,50 @@ public class Account {
         return privateOrderBook;
     }
 
-    public void addGBP(double amount) {
+    public void addGBP(long amount) {
         balanceGBP += amount;
     }
 
-    public void addBTC(double amount) {
+    public void addBTC(long amount) {
         balanceBTC += amount;
     }
 
-    public void subtractGBP(double amount) {
+    public void subtractGBP(long amount) {
         balanceGBP -= amount;
     }
 
-    public void subtractBTC(double amount) {
+    public void subtractBTC(long amount) {
         balanceBTC -= amount;
     }
 
     public void chargeAccount(Order order) {
         if (order.getAction().equals("Buy")) {
-            int cost = order.getPrice() * order.getVolume();
+            long cost = order.getPrice() * order.getVolume();
             subtractGBP(cost);
         } else if (order.getAction().equals("Sell")) {
             subtractBTC(order.getVolume());
         }
     }
 
-    public void creditAccount(Trade trade, int buyOrderPrice) {
+    private void resetOrderBook() {
+        privateOrderBook = new OrderBook();
+    }
+
+    public void creditAccount(Trade trade, long buyOrderPrice) {
         if (trade.getBuyer().equals(username)) {
-            int refund = trade.getVolume() * (buyOrderPrice - trade.getPrice());
+            long refund = trade.getVolume() * (buyOrderPrice - trade.getPrice());
             addGBP(refund);
             addBTC(trade.getVolume());
         }
         if (trade.getSeller().equals(username)) {
-            int profit = trade.getPrice() * trade.getVolume();
+            long profit = trade.getPrice() * trade.getVolume();
             addGBP(profit);
         }
     }
 
     public void refundOrder(Order order) {
         if (order.getAction().equals("Buy")) {
-            int cost = order.getPrice() * order.getVolume();
+            long cost = order.getPrice() * order.getVolume();
             addGBP(cost);
         } else if (order.getAction().equals("Sell")) {
             addBTC(order.getVolume());
@@ -81,6 +93,7 @@ public class Account {
     }
 
     public void updateOrderBook(OrderBook mainOrderBook) {
+        resetOrderBook();
         for (Order order : mainOrderBook.getBuy()
         ) {
             if (order.getUsername().equals(username)) {
