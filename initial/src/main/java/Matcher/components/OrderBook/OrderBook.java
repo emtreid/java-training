@@ -3,61 +3,63 @@ package Matcher.components.OrderBook;
 import Matcher.components.Order;
 import Matcher.util.BuyComparator;
 import Matcher.util.SellComparator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class OrderBook {
-    private ArrayList<Order> buy;
-    private ArrayList<Order> sell;
+    private ArrayList<Order> Buy;
+    private ArrayList<Order> Sell;
 
     public OrderBook() {
-        buy = new ArrayList<Order>();
-        sell = new ArrayList<Order>();
+        Buy = new ArrayList<Order>();
+        Sell = new ArrayList<Order>();
     }
 
+    @JsonProperty("Buy")
     public ArrayList<Order> getBuy() {
-        return buy;
+        return Buy;
     }
 
+    @JsonProperty("Sell")
     public ArrayList<Order> getSell() {
-        return sell;
+        return Sell;
     }
 
     public void emptyBook() {
-        buy = new ArrayList<Order>();
-        sell = new ArrayList<Order>();
+        Buy = new ArrayList<Order>();
+        Sell = new ArrayList<Order>();
     }
 
     public void addOrder(Order newOrder) {
         if (newOrder.getAction().equals("Buy")) {
-            buy.add(newOrder);
+            Buy.add(newOrder);
         } else if (newOrder.getAction().equals("Sell")) {
-            sell.add(newOrder);
+            Sell.add(newOrder);
         }
     }
 
     public void sortOrders() {
-        buy.sort(new BuyComparator());
-        sell.sort(new SellComparator());
+        Buy.sort(new BuyComparator());
+        Sell.sort(new SellComparator());
     }
 
     public void filterEmpty() {
         ArrayList<Order> newBuy = new ArrayList<Order>();
         ArrayList<Order> newSell = new ArrayList<Order>();
-        for (Order order : buy
+        for (Order order : Buy
         ) {
             if (order.getVolume() > 1e-5) {
                 newBuy.add(order);
             }
         }
-        for (Order order : sell
+        for (Order order : Sell
         ) {
             if (order.getVolume() > 1e-5) {
                 newSell.add(order);
             }
         }
-        buy = newBuy;
-        sell = newSell;
+        Buy = newBuy;
+        Sell = newSell;
     }
 }

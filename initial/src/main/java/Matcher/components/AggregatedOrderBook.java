@@ -1,6 +1,7 @@
 package Matcher.components;
 
 import Matcher.components.OrderBook.OrderBook;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 import java.util.TreeMap;
@@ -14,10 +15,12 @@ public class AggregatedOrderBook {
         Sell = populateBook(orderBook.getSell());
     }
 
+    @JsonProperty("Buy")
     public TreeMap<Long, Long> getBuy() {
         return Buy;
     }
 
+    @JsonProperty("Sell")
     public TreeMap<Long, Long> getSell() {
         return Sell;
     }

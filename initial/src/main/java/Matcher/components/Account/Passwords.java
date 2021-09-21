@@ -8,9 +8,9 @@ import java.util.HashMap;
 
 @Service
 public class Passwords {
-    private HashMap<String, String> passwords;
-    private HashMap<String, Integer> tokens;
-    private HashMap<Integer, String> usernames;
+    private final HashMap<String, String> passwords;
+    private final HashMap<String, Integer> tokens;
+    private final HashMap<Integer, String> usernames;
 
     public Passwords() {
         passwords = new HashMap<String, String>();
