@@ -1,6 +1,7 @@
 package Matcher;
 
 import Matcher.components.Account.Account;
+import Matcher.components.Account.AccountService;
 import Matcher.components.Account.Passwords;
 import Matcher.components.AggregatedOrderBook;
 import Matcher.components.Order;
@@ -14,23 +15,23 @@ import java.util.HashMap;
 
 @Service
 public class Matcher {
-    private final HashMap<String, Account> accountList;
+    //    private final HashMap<String, Account> accountList;
     private final ArrayList<Trade> tradeHistory;
     private OrderBook orderBook;
     private final AggregatedOrderBook aggregatedOrderBook;
-    private final Passwords passwords;
 
     @Autowired
-    public Matcher(Passwords passwords) {
-        accountList = new HashMap<String, Account>();
+    AccountService accountService;
+
+    @Autowired
+    public Matcher() {
         tradeHistory = new ArrayList<Trade>();
         orderBook = new OrderBook();
         aggregatedOrderBook = new AggregatedOrderBook(orderBook);
-        this.passwords = passwords;
     }
 
     public Account getAccount(String username) {
-        return accountList.get(username);
+        return accountService.getAccountByUsername(username).get(0);
     }
 
     public ArrayList<Trade> getTradeHistory() {
@@ -46,47 +47,68 @@ public class Matcher {
     }
 
     public void createAccount(String username, String password, long startingGBP, long startingBTC) {
-        Account newAccount = new Account(username, startingGBP, startingBTC);
-        if (getAccount(username) == null) {
-            accountList.put(username, newAccount);
-            passwords.addAccount(username, password);
-        }
-        System.out.println(accountList.size());
+        //Account newAccount = new Account(username, startingGBP, startingBTC);
+        Account account = new Account(username, password, (username + password).hashCode(), (int) startingGBP, (int) startingBTC);
+        accountService.saveOrUpdate(account);
+//        if (getAccount(username) == null) {
+//            accountList.put(username, newAccount);
+        //passwords.addAccount(username, password);
+//        }
+//        System.out.println(accountList.size());
+        System.out.println(accountService.getAllAccount().size());
+        System.out.println(accountService.getAccountById(account.getId()).toString());
     }
 
     public void createAccount(String username, long startingGBP, long startingBTC) {
         createAccount(username, "password", startingGBP, startingBTC);
     }
 
-    private void updatePrivateOrderBooks() {
-        System.out.println(orderBook.toString());
-        for (Account account : accountList.values()
+//    private void updatePrivateOrderBooks() {
+//        System.out.println(orderBook.toString());
+//        for (Account account : accountList.values()
+//        ) {
+//            account.updateOrderBook(orderBook);
+//        }
+//    }
+
+    public OrderBook getPrivateOrderBook(int token, String username) {
+        OrderBook privateOrderBook = new OrderBook();
+        for (Order order : orderBook.getBuy()
         ) {
-            account.updateOrderBook(orderBook);
+            if (order.getUsername().equals(username)) {
+                privateOrderBook.addOrder(order);
+            }
         }
+        for (Order order : orderBook.getSell()
+        ) {
+            if (order.getUsername().equals(username)) {
+                privateOrderBook.addOrder(order);
+            }
+        }
+        return privateOrderBook;
     }
 
     public void processOrder(int token, Order order) {
         try {
-            Account currentAccount = accountList.get(order.getUsername());
-            if (order.getUsername().equals(passwords.authenticateToken(token))) {
+            Account currentAccount = accountService.getAccountByUsername(order.getUsername()).get(0);
+            if (order.getUsername().equals(accountService.authenticateToken(token))) {
                 currentAccount.chargeAccount(order);
                 Order remainingOrder = makeTrades(order);
                 orderBook.addOrder(remainingOrder);
                 orderBook.filterEmpty();
                 orderBook.sortOrders();
                 aggregatedOrderBook.updateBook(orderBook);
-                updatePrivateOrderBooks();
+                accountService.saveOrUpdate(currentAccount);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public void cancelOrder(String id, int token, boolean cancelAll) {
+    public void cancelOrder(int token, String id, boolean cancelAll) {
         try {
             OrderBook newOrderBook = new OrderBook();
-            String username = passwords.authenticateToken(token);
+            String username = accountService.authenticateToken(token);
             String orderUsername = "";
             for (Order order : orderBook.getBuy()
             ) {
@@ -114,7 +136,7 @@ public class Matcher {
                 orderBook = newOrderBook;
                 orderBook.sortOrders();
                 aggregatedOrderBook.updateBook(orderBook);
-                if (!cancelAll) updatePrivateOrderBooks();
+                accountService.saveOrUpdate(getAccount(username));
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -123,18 +145,18 @@ public class Matcher {
 
     public void cancelAllOrders(int token) {
         try {
-            String username = passwords.authenticateToken(token);
-            updatePrivateOrderBooks();
+            String username = accountService.authenticateToken(token);
             Account currentAccount = getAccount(username);
-            for (Order order : currentAccount.getPrivateOrderBook().getBuy()
+            for (Order order : orderBook.getBuy()
             ) {
-                cancelOrder(order.getId(), token, true);
+                if (order.getUsername().equals(username))
+                    cancelOrder(token, order.getId(), true);
             }
-            for (Order order : currentAccount.getPrivateOrderBook().getSell()
+            for (Order order : orderBook.getSell()
             ) {
-                cancelOrder(order.getId(), token, true);
+                if (order.getUsername().equals(username))
+                    cancelOrder(token, order.getId(), true);
             }
-            updatePrivateOrderBooks();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -167,6 +189,8 @@ public class Matcher {
                     addTrade(newTrade);
                     order.setVolume(order.getVolume() - newTrade.getVolume());
                     previousOrder.setVolume(previousOrder.getVolume() - newTrade.getVolume());
+                    accountService.saveOrUpdate(buyAccount);
+                    accountService.saveOrUpdate(sellAccount);
                     if (order.getVolume() < 1e-5) {
                         break;
                     }

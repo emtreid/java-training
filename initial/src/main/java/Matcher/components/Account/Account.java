@@ -1,61 +1,72 @@
 package Matcher.components.Account;
 
 import Matcher.components.Order;
-import Matcher.components.OrderBook.OrderBook;
 import Matcher.components.Trade;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.persistence.*;
 
+@Entity
+@Table
+@ToString
+@NoArgsConstructor
 public class Account {
-    @NotNull
-    @Size(min = 1)
-    private final String username;
-    @NotNull
-    @Min(0)
-    private long balanceGBP;// balance*100
-    @NotNull
-    @Min(0)
-    private long balanceBTC;// balance*10
-    private OrderBook privateOrderBook = new OrderBook();
+    @Id
+    @GeneratedValue
+    @Column
+    @Getter
+    private int id;
 
-    public Account(String username, long startingGBP, long startingBTC) {
+    @Column
+    @Getter
+    @Setter
+    private String username;
+
+    @Column
+    private @Getter
+    @Setter
+    String password;
+
+    @Column
+    @Getter
+    @Setter
+    private int token;
+
+    @Column
+    @Getter
+    @Setter
+    private int gbp;
+
+    @Column
+    @Getter
+    @Setter
+    private int btc;
+
+    public Account(String username, String password, int token, int gbp, int btc) {
         this.username = username;
-        balanceGBP = startingGBP;
-        balanceBTC = startingBTC;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public long getBalanceGBP() {
-        return balanceGBP;
-    }
-
-    public long getBalanceBTC() {
-        return balanceBTC;
-    }
-
-    public OrderBook getPrivateOrderBook() {
-        return privateOrderBook;
+        this.password = password;
+        this.token = token;
+        this.gbp = gbp;
+        this.btc = btc;
     }
 
     public void addGBP(long amount) {
-        balanceGBP += amount;
+        gbp += amount;
     }
 
     public void addBTC(long amount) {
-        balanceBTC += amount;
+        btc += amount;
     }
 
     public void subtractGBP(long amount) {
-        balanceGBP -= amount;
+        gbp -= amount;
     }
 
     public void subtractBTC(long amount) {
-        balanceBTC -= amount;
+        btc -= amount;
     }
 
     public void chargeAccount(Order order) {
@@ -65,10 +76,6 @@ public class Account {
         } else if (order.getAction().equals("Sell")) {
             subtractBTC(order.getVolume());
         }
-    }
-
-    private void resetOrderBook() {
-        privateOrderBook = new OrderBook();
     }
 
     public void creditAccount(Trade trade, long buyOrderPrice) {
@@ -91,22 +98,4 @@ public class Account {
             addBTC(order.getVolume());
         }
     }
-
-    public void updateOrderBook(OrderBook mainOrderBook) {
-        resetOrderBook();
-        for (Order order : mainOrderBook.getBuy()
-        ) {
-            if (order.getUsername().equals(username)) {
-                privateOrderBook.addOrder(order);
-            }
-        }
-        for (Order order : mainOrderBook.getSell()
-        ) {
-            if (order.getUsername().equals(username)) {
-                privateOrderBook.addOrder(order);
-            }
-        }
-    }
-
-
 }

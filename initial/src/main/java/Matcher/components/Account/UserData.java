@@ -13,7 +13,7 @@ public class UserData {
     long BTC;
 
     public UserData(Account account) {
-        GBP = account.getBalanceGBP(); //new BigDecimal(account.getBalanceGBP()).divide(new BigDecimal(10000), RoundingMode.HALF_UP);
-        BTC = account.getBalanceBTC(); //new BigDecimal(account.getBalanceBTC()).divide(new BigDecimal(100), RoundingMode.HALF_UP);
+        GBP = account.getGbp(); //new BigDecimal(account.getBalanceGBP()).divide(new BigDecimal(10000), RoundingMode.HALF_UP);
+        BTC = account.getBtc(); //new BigDecimal(account.getBalanceBTC()).divide(new BigDecimal(100), RoundingMode.HALF_UP);
     }
 }
