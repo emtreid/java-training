@@ -48,7 +48,7 @@ public class Matcher {
 
     public void createAccount(String username, String password, long startingGBP, long startingBTC) {
         //Account newAccount = new Account(username, startingGBP, startingBTC);
-        Account account = new Account(username, password, (username + password).hashCode(), (int) startingGBP, (int) startingBTC);
+        Account account = new Account(username, password, (int) startingGBP, (int) startingBTC);
         accountService.saveOrUpdate(account);
 //        if (getAccount(username) == null) {
 //            accountList.put(username, newAccount);
@@ -71,7 +71,7 @@ public class Matcher {
 //        }
 //    }
 
-    public OrderBook getPrivateOrderBook(int token, String username) {
+    public OrderBook getPrivateOrderBook(String username) {
         OrderBook privateOrderBook = new OrderBook();
         for (Order order : orderBook.getBuy()
         ) {
@@ -88,27 +88,27 @@ public class Matcher {
         return privateOrderBook;
     }
 
-    public void processOrder(int token, Order order) {
+    public void processOrder(Order order) {
         try {
             Account currentAccount = accountService.getAccountByUsername(order.getUsername()).get(0);
-            if (order.getUsername().equals(accountService.authenticateToken(token))) {
-                currentAccount.chargeAccount(order);
-                Order remainingOrder = makeTrades(order);
-                orderBook.addOrder(remainingOrder);
-                orderBook.filterEmpty();
-                orderBook.sortOrders();
-                aggregatedOrderBook.updateBook(orderBook);
-                accountService.saveOrUpdate(currentAccount);
-            }
+
+            currentAccount.chargeAccount(order);
+            Order remainingOrder = makeTrades(order);
+            orderBook.addOrder(remainingOrder);
+            orderBook.filterEmpty();
+            orderBook.sortOrders();
+            aggregatedOrderBook.updateBook(orderBook);
+            accountService.saveOrUpdate(currentAccount);
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public void cancelOrder(int token, String id, boolean cancelAll) {
+    public void cancelOrder(String username, String id, boolean cancelAll) {
         try {
             OrderBook newOrderBook = new OrderBook();
-            String username = accountService.authenticateToken(token);
+//            String username = accountService.authenticateToken(token);
             String orderUsername = "";
             for (Order order : orderBook.getBuy()
             ) {
@@ -143,19 +143,19 @@ public class Matcher {
         }
     }
 
-    public void cancelAllOrders(int token) {
+    public void cancelAllOrders(String username) {
         try {
-            String username = accountService.authenticateToken(token);
+//            String username = accountService.authenticateToken(token);
             Account currentAccount = getAccount(username);
             for (Order order : orderBook.getBuy()
             ) {
                 if (order.getUsername().equals(username))
-                    cancelOrder(token, order.getId(), true);
+                    cancelOrder(username, order.getId(), true);
             }
             for (Order order : orderBook.getSell()
             ) {
                 if (order.getUsername().equals(username))
-                    cancelOrder(token, order.getId(), true);
+                    cancelOrder(username, order.getId(), true);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import Matcher.components.Order;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.Configuration;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -20,15 +21,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @SpringBootApplication
 public class Application {
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**");
-            }
-        };
-    }
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurerAdapter() {
+//            @Override
+//            public void addCorsMappings(@NotNull CorsRegistry registry) {
+//                registry.addMapping("/**");
+//            }
+//        };
+//    }
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);

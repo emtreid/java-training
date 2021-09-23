@@ -33,11 +33,6 @@ public class Account {
     @Column
     @Getter
     @Setter
-    private int token;
-
-    @Column
-    @Getter
-    @Setter
     private int gbp;
 
     @Column
@@ -45,10 +40,9 @@ public class Account {
     @Setter
     private int btc;
 
-    public Account(String username, String password, int token, int gbp, int btc) {
+    public Account(String username, String password, int gbp, int btc) {
         this.username = username;
         this.password = password;
-        this.token = token;
         this.gbp = gbp;
         this.btc = btc;
     }

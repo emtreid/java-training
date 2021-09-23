@@ -25,29 +25,29 @@ public class AccountService {
         return accountRepository.findByUsername(username);
     }
 
-    public List<Account> getAccountByToken(int token) {
-        return accountRepository.findByToken(token);
-    }
+//    public List<Account> getAccountByToken(int token) {
+//        return accountRepository.findByToken(token);
+//    }
 
-    public int getToken(String username, String password) throws Exception {
+    public boolean authenticatePassword(String username, String password) {
         List<Account> userAccounts = getAccountByUsername(username);
         if (userAccounts.size() == 0) {
-            throw new Exception("Invalid username or password");
+            return false;
         } else if (userAccounts.get(0).getPassword().equals(password)) {
-            return userAccounts.get(0).getToken();
+            return true;
         } else {
-            throw new Exception("Invalid username or password");
+            return false;
         }
     }
 
-    public String authenticateToken(int token) throws Exception {
-        List<Account> tokenAccounts = getAccountByToken(token);
-        if (tokenAccounts.size() != 0) {
-            return tokenAccounts.get(0).getUsername();
-        } else {
-            throw new Exception("Invalid token");
-        }
-    }
+//    public String authenticateToken(int token) throws Exception {
+//        List<Account> tokenAccounts = getAccountByToken(token);
+//        if (tokenAccounts.size() != 0) {
+//            return tokenAccounts.get(0).getUsername();
+//        } else {
+//            throw new Exception("Invalid token");
+//        }
+//    }
 
     public void saveOrUpdate(Account account) {
         List<Account> prevAccounts = getAccountByUsername(account.getUsername());
