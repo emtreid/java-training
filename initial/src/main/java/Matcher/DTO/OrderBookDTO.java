@@ -1,6 +1,6 @@
 package Matcher.DTO;
 
-import Matcher.components.Order;
+import Matcher.components.OrderBook.OrderSQL;
 import Matcher.components.OrderBook.OrderBook;
 import lombok.*;
 
@@ -21,13 +21,13 @@ public class OrderBookDTO {
     public OrderBookDTO(OrderBook orderBook) {
         buy = new ArrayList<OutOrderDTO>();
         sell = new ArrayList<OutOrderDTO>();
-        for (Order order : orderBook.getBuy()
+        for (OrderSQL orderSQL : orderBook.getBuy()
         ) {
-            buy.add(new OutOrderDTO(order));
+            buy.add(new OutOrderDTO(orderSQL));
         }
-        for (Order order : orderBook.getSell()
+        for (OrderSQL orderSQL : orderBook.getSell()
         ) {
-            sell.add(new OutOrderDTO(order));
+            sell.add(new OutOrderDTO(orderSQL));
         }
     }
 }

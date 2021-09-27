@@ -1,5 +1,6 @@
 package Matcher.components;
 
+import Matcher.components.Trade.Trade;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,7 +1,6 @@
 package Matcher.DTO;
 
-import Matcher.components.Order;
-import Matcher.components.Trade;
+import Matcher.components.Trade.Trade;
 import lombok.*;
 
 import java.sql.Timestamp;
@@ -28,7 +27,7 @@ public class TradeDTO {
     Timestamp timestamp;
     private @Getter
     @Setter
-    String id;
+    int id;
 
     public TradeDTO(Trade trade) {
         this(trade.getBuyer(), trade.getSeller(), trade.getVolume(), trade.getPrice(), trade.getTimestamp(), trade.getId());

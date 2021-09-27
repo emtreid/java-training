@@ -1,6 +1,7 @@
 package Matcher.components;
 
 import Matcher.components.Account.Account;
+import Matcher.components.OrderBook.OrderSQL;
 import Matcher.components.OrderBook.OrderBook;
 import org.junit.Test;
 import org.junit.Assert;
@@ -38,15 +39,15 @@ public class AccountTest {
 
     @Test
     public void privateOrderBookDeprecated() {
-        Order order1 = new Order("user1", "Buy", 5, 1);
-        Order order2 = new Order("user1", "Buy", 0, 2);
-        Order order3 = new Order("user1", "Sell", 10, 1);
-        Order order4 = new Order("user2", "Buy", 2, 3);
+        OrderSQL orderSQL1 = new OrderSQL("user1", "Buy", 5, 1);
+        OrderSQL orderSQL2 = new OrderSQL("user1", "Buy", 0, 2);
+        OrderSQL orderSQL3 = new OrderSQL("user1", "Sell", 10, 1);
+        OrderSQL orderSQL4 = new OrderSQL("user2", "Buy", 2, 3);
         OrderBook orderBook = new OrderBook();
-        orderBook.addOrder(order1);
-        orderBook.addOrder(order2);
-        orderBook.addOrder(order3);
-        orderBook.addOrder(order4);
+        orderBook.addOrder(orderSQL1);
+        orderBook.addOrder(orderSQL2);
+        orderBook.addOrder(orderSQL3);
+        orderBook.addOrder(orderSQL4);
         Account account = new Account("user1", "password", 1, startingGBP, startingBTC);
     }
 }

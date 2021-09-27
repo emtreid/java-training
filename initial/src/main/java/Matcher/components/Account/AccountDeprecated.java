@@ -1,8 +1,8 @@
 package Matcher.components.Account;
 
-import Matcher.components.Order;
+import Matcher.components.OrderBook.OrderSQL;
 import Matcher.components.OrderBook.OrderBook;
-import Matcher.components.Trade;
+import Matcher.components.Trade.Trade;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -58,12 +58,12 @@ public class AccountDeprecated {
         balanceBTC -= amount;
     }
 
-    public void chargeAccount(Order order) {
-        if (order.getAction().equals("Buy")) {
-            long cost = order.getPrice() * order.getVolume();
+    public void chargeAccount(OrderSQL orderSQL) {
+        if (orderSQL.getAction().equals("Buy")) {
+            long cost = orderSQL.getPrice() * orderSQL.getVolume();
             subtractGBP(cost);
-        } else if (order.getAction().equals("Sell")) {
-            subtractBTC(order.getVolume());
+        } else if (orderSQL.getAction().equals("Sell")) {
+            subtractBTC(orderSQL.getVolume());
         }
     }
 
@@ -83,27 +83,27 @@ public class AccountDeprecated {
         }
     }
 
-    public void refundOrder(Order order) {
-        if (order.getAction().equals("Buy")) {
-            long cost = order.getPrice() * order.getVolume();
+    public void refundOrder(OrderSQL orderSQL) {
+        if (orderSQL.getAction().equals("Buy")) {
+            long cost = orderSQL.getPrice() * orderSQL.getVolume();
             addGBP(cost);
-        } else if (order.getAction().equals("Sell")) {
-            addBTC(order.getVolume());
+        } else if (orderSQL.getAction().equals("Sell")) {
+            addBTC(orderSQL.getVolume());
         }
     }
 
     public void updateOrderBook(OrderBook mainOrderBook) {
         resetOrderBook();
-        for (Order order : mainOrderBook.getBuy()
+        for (OrderSQL orderSQL : mainOrderBook.getBuy()
         ) {
-            if (order.getUsername().equals(username)) {
-                privateOrderBook.addOrder(order);
+            if (orderSQL.getUsername().equals(username)) {
+                privateOrderBook.addOrder(orderSQL);
             }
         }
-        for (Order order : mainOrderBook.getSell()
+        for (OrderSQL orderSQL : mainOrderBook.getSell()
         ) {
-            if (order.getUsername().equals(username)) {
-                privateOrderBook.addOrder(order);
+            if (orderSQL.getUsername().equals(username)) {
+                privateOrderBook.addOrder(orderSQL);
             }
         }
     }

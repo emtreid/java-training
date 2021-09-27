@@ -1,7 +1,7 @@
 package Matcher.components.Account;
 
-import Matcher.components.Order;
-import Matcher.components.Trade;
+import Matcher.components.OrderBook.OrderSQL;
+import Matcher.components.Trade.Trade;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -63,16 +63,45 @@ public class Account {
         btc -= amount;
     }
 
-    public void chargeAccount(Order order) {
-        if (order.getAction().equals("Buy")) {
-            long cost = order.getPrice() * order.getVolume();
+    public boolean checkBalance(String currency, long amount) {
+        if (currency.equals("gbp")) {
+            return (gbp >= amount);
+        } else if (currency.equals("btc")) {
+            return (btc >= amount);
+        } else return false;
+    }
+
+    public boolean checkBalance(OrderSQL orderSQL) {
+        if (orderSQL.getAction().equals("Buy")) {
+            return checkBalance("gbp", orderSQL.getPrice() * orderSQL.getVolume());
+        } else if (orderSQL.getAction().equals("Sell")) {
+            return checkBalance("btc", orderSQL.getVolume());
+        } else return false;
+    }
+
+    public void withdraw(String currency, long amount) throws Exception {
+        if (!checkBalance(currency, amount)) {
+            throw new Exception("Insufficient funds");
+        } else {
+            if (currency.equals("gbp")) {
+                subtractGBP(amount);
+            } else if (currency.equals("btc")) {
+                subtractBTC(amount);
+            }
+        }
+    }
+
+    public void chargeAccount(OrderSQL orderSQL) {
+        if (orderSQL.getAction().equals("Buy")) {
+            long cost = orderSQL.getPrice() * orderSQL.getVolume();
             subtractGBP(cost);
-        } else if (order.getAction().equals("Sell")) {
-            subtractBTC(order.getVolume());
+        } else if (orderSQL.getAction().equals("Sell")) {
+            subtractBTC(orderSQL.getVolume());
         }
     }
 
     public void creditAccount(Trade trade, long buyOrderPrice) {
+        System.out.println("crediting");
         if (trade.getBuyer().equals(username)) {
             long refund = trade.getVolume() * (buyOrderPrice - trade.getPrice());
             addGBP(refund);
@@ -84,12 +113,12 @@ public class Account {
         }
     }
 
-    public void refundOrder(Order order) {
-        if (order.getAction().equals("Buy")) {
-            long cost = order.getPrice() * order.getVolume();
+    public void refundOrder(OrderSQL orderSQL) {
+        if (orderSQL.getAction().equals("Buy")) {
+            long cost = orderSQL.getPrice() * orderSQL.getVolume();
             addGBP(cost);
-        } else if (order.getAction().equals("Sell")) {
-            addBTC(order.getVolume());
+        } else if (orderSQL.getAction().equals("Sell")) {
+            addBTC(orderSQL.getVolume());
         }
     }
 }

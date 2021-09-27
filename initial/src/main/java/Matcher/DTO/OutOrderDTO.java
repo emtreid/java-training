@@ -1,35 +1,28 @@
 package Matcher.DTO;
 
-import Matcher.components.Order;
+import Matcher.components.OrderBook.OrderSQL;
 import lombok.*;
 
-import java.sql.Timestamp;
-
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 public class OutOrderDTO {
+    
+    private String username;
 
-    private @Getter
-    @Setter
-    String username;
-    private @Getter
-    @Setter
-    String action;
-    private @Getter
-    @Setter
-    long volume;
-    private @Getter
-    @Setter
-    long price;
-    private @Getter
-    @Setter
-    String timestamp;
-    private @Getter
-    @Setter
-    String id;
+    private String action;
 
-    public OutOrderDTO(Order order) {
-        this(order.getUsername(), order.getAction(), order.getVolume(), order.getPrice(), order.getTimestamp().toString(), order.getId());
+    private long volume;
+
+    private long price;
+
+    private String timestamp;
+
+    private int id;
+
+    public OutOrderDTO(OrderSQL orderSQL) {
+        this(orderSQL.getUsername(), orderSQL.getAction(), orderSQL.getVolume(), orderSQL.getPrice(), orderSQL.getTimestamp().toString(), orderSQL.getId());
     }
 }

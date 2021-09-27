@@ -1,6 +1,5 @@
 package Matcher.components.OrderBook;
 
-import Matcher.components.Order;
 import Matcher.util.BuyComparator;
 import Matcher.util.SellComparator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,34 +7,34 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 
 public class OrderBook {
-    private ArrayList<Order> Buy;
-    private ArrayList<Order> Sell;
+    private ArrayList<OrderSQL> Buy;
+    private ArrayList<OrderSQL> Sell;
 
     public OrderBook() {
-        Buy = new ArrayList<Order>();
-        Sell = new ArrayList<Order>();
+        Buy = new ArrayList<OrderSQL>();
+        Sell = new ArrayList<OrderSQL>();
     }
 
     @JsonProperty("Buy")
-    public ArrayList<Order> getBuy() {
+    public ArrayList<OrderSQL> getBuy() {
         return Buy;
     }
 
     @JsonProperty("Sell")
-    public ArrayList<Order> getSell() {
+    public ArrayList<OrderSQL> getSell() {
         return Sell;
     }
 
     public void emptyBook() {
-        Buy = new ArrayList<Order>();
-        Sell = new ArrayList<Order>();
+        Buy = new ArrayList<OrderSQL>();
+        Sell = new ArrayList<OrderSQL>();
     }
 
-    public void addOrder(Order newOrder) {
-        if (newOrder.getAction().equals("Buy")) {
-            Buy.add(newOrder);
-        } else if (newOrder.getAction().equals("Sell")) {
-            Sell.add(newOrder);
+    public void addOrder(OrderSQL newOrderSQL) {
+        if (newOrderSQL.getAction().equals("Buy")) {
+            Buy.add(newOrderSQL);
+        } else if (newOrderSQL.getAction().equals("Sell")) {
+            Sell.add(newOrderSQL);
         }
     }
 
@@ -45,18 +44,18 @@ public class OrderBook {
     }
 
     public void filterEmpty() {
-        ArrayList<Order> newBuy = new ArrayList<Order>();
-        ArrayList<Order> newSell = new ArrayList<Order>();
-        for (Order order : Buy
+        ArrayList<OrderSQL> newBuy = new ArrayList<OrderSQL>();
+        ArrayList<OrderSQL> newSell = new ArrayList<OrderSQL>();
+        for (OrderSQL orderSQL : Buy
         ) {
-            if (order.getVolume() > 1e-5) {
-                newBuy.add(order);
+            if (orderSQL.getVolume() > 1e-5) {
+                newBuy.add(orderSQL);
             }
         }
-        for (Order order : Sell
+        for (OrderSQL orderSQL : Sell
         ) {
-            if (order.getVolume() > 1e-5) {
-                newSell.add(order);
+            if (orderSQL.getVolume() > 1e-5) {
+                newSell.add(orderSQL);
             }
         }
         Buy = newBuy;

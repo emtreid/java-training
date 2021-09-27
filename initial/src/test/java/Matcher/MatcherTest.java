@@ -1,15 +1,15 @@
 package Matcher;
 
 
-import Matcher.components.Order;
+import Matcher.components.OrderBook.OrderSQL;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class MatcherTest {
-    Order order1 = new Order("Elliott", "Buy", 15, 25);
-    Order order2 = new Order("Elliott", "Sell", 10, 20);
-    Order order3 = new Order("Andrea", "Buy", 5, 15);
-    Order order4 = new Order("Andrea", "Sell", 25, 20);
+    OrderSQL orderSQL1 = new OrderSQL("Elliott", "Buy", 15, 25);
+    OrderSQL orderSQL2 = new OrderSQL("Elliott", "Sell", 10, 20);
+    OrderSQL orderSQL3 = new OrderSQL("Andrea", "Buy", 5, 15);
+    OrderSQL orderSQL4 = new OrderSQL("Andrea", "Sell", 25, 20);
 
 
     @Test
@@ -21,9 +21,9 @@ public class MatcherTest {
     public void addOrder() {
         Matcher matcher = new Matcher();
         matcher.createAccount("Elliott", "password", 1000, 1500);
-        matcher.processOrder("Elliottpassword".hashCode(), order1);
+        matcher.processOrder("Elliottpassword".hashCode(), orderSQL1);
         Assert.assertEquals(matcher.getOrderBook().getBuy().size(), 1);
-        matcher.processOrder("Elliottpassword".hashCode(), order2);
+        matcher.processOrder("Elliottpassword".hashCode(), orderSQL2);
         Assert.assertEquals(matcher.getOrderBook().getSell().size(), 1);
     }
 
@@ -32,8 +32,8 @@ public class MatcherTest {
         Matcher matcher = new Matcher();
         matcher.createAccount("Elliott", 1000, 1500);
         matcher.createAccount("Andrea", 1000, 1500);
-        matcher.processOrder("Elliottpassword".hashCode(), order1);
-        matcher.processOrder("Andreapassword".hashCode(), order4);
+        matcher.processOrder("Elliottpassword".hashCode(), orderSQL1);
+        matcher.processOrder("Andreapassword".hashCode(), orderSQL4);
         Assert.assertEquals(matcher.getTradeHistory().size(), 1);
         Assert.assertEquals(matcher.getOrderBook().getBuy().size(), 0);
     }
@@ -43,14 +43,14 @@ public class MatcherTest {
         Matcher matcher = new Matcher();
         matcher.createAccount("Elliott", 1000, 1500);
         matcher.createAccount("Andrea", 1000, 1500);
-        matcher.processOrder("Elliottpassword".hashCode(), order1);
+        matcher.processOrder("Elliottpassword".hashCode(), orderSQL1);
         System.out.println(matcher.getOrderBook().getBuy().size());
-        matcher.processOrder("Elliottpassword".hashCode(), order2);
+        matcher.processOrder("Elliottpassword".hashCode(), orderSQL2);
         System.out.println(matcher.getOrderBook().getBuy().size());
-        matcher.processOrder("Andreapassword".hashCode(), order3);
+        matcher.processOrder("Andreapassword".hashCode(), orderSQL3);
         System.out.println(matcher.getOrderBook().getBuy().size());
         Assert.assertEquals(matcher.getOrderBook().getBuy().size(), 2);
-        matcher.cancelOrder("Andreapassword".hashCode(), order3.getId(), false);
+        matcher.cancelOrder("Andreapassword".hashCode(), orderSQL3.getId(), false);
         Assert.assertEquals(matcher.getOrderBook().getBuy().size(), 1);
     }
 
@@ -58,10 +58,10 @@ public class MatcherTest {
     public void chargeAndRefund() {
         Matcher matcher = new Matcher();
         matcher.createAccount("Elliott", 1000, 1500);
-        matcher.processOrder("Elliottpassword".hashCode(), order1);
+        matcher.processOrder("Elliottpassword".hashCode(), orderSQL1);
         Assert.assertEquals(matcher.getAccount("Elliott").getGbp(),
-                1000 - (long) order1.getPrice() * order1.getVolume());
-        matcher.cancelOrder("Elliottpassword".hashCode(), order1.getId(), false);
+                1000 - (long) orderSQL1.getPrice() * orderSQL1.getVolume());
+        matcher.cancelOrder("Elliottpassword".hashCode(), orderSQL1.getId(), false);
         Assert.assertEquals(matcher.getAccount("Elliott").getGbp(),
                 1000);
     }
@@ -82,8 +82,8 @@ public class MatcherTest {
                 + matcher.getAccount("Bob").getGbp()
                 + matcher.getAccount("Elliott").getGbp(), 150000);
         for (int i = 0; i < 100; i++) {
-            Order newOrder = new Order(users[i % 3], actions[i % 2], volumes[i % 4], prices[i % 4]);
-            matcher.processOrder(tokens[i % 3], newOrder);
+            OrderSQL newOrderSQL = new OrderSQL(users[i % 3], actions[i % 2], volumes[i % 4], prices[i % 4]);
+            matcher.processOrder(tokens[i % 3], newOrderSQL);
         }
         System.out.println(matcher.getTradeHistory().size());
         matcher.cancelAllOrders("Andreapassword".hashCode());

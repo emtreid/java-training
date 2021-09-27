@@ -1,12 +1,9 @@
 package Matcher.DTO;
 
-import Matcher.components.Order;
-import Matcher.components.OrderBook.OrderBook;
-import Matcher.components.Trade;
+import Matcher.components.Trade.Trade;
 import lombok.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor

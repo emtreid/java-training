@@ -50,9 +50,12 @@ public class AccountService {
 //    }
 
     public void saveOrUpdate(Account account) {
+        System.out.println("saving account");
+        System.out.println(account.toString());
         List<Account> prevAccounts = getAccountByUsername(account.getUsername());
         if (prevAccounts.size() != 0) {
             delete(prevAccounts.get(0).getId());
+            System.out.println("deleted");
         }
         accountRepository.save(account);
         System.out.println("currentLength" + getAllAccount().size());

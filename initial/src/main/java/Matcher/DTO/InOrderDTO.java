@@ -1,6 +1,5 @@
 package Matcher.DTO;
 
-import Matcher.components.Order;
 import lombok.*;
 
 @NoArgsConstructor
