@@ -39,7 +39,6 @@ public class HelloController {
         AggregatedOrderBook aggregatedOrderBook = matcher.getAggregatedOrderBook();
         List<Trade> tradeHistory = matcher.getTradeHistory();
         UserData userData = new UserData(matcher.getAccount(username));
-        System.out.println("GotResponse");
         return new Response(personalOB, aggregatedOrderBook, tradeHistory, userData);
     }
 
@@ -55,8 +54,6 @@ public class HelloController {
                 .parseClaimsJws(Authorization.replace("Bearer ", ""))
                 .getBody()
                 .getSubject();
-        System.out.println("NAME");
-        System.out.println(username);
         return getResponse(username);
     }
 
@@ -84,7 +81,6 @@ public class HelloController {
         System.out.println(orderSQL.toString());
         if (username.equals(orderSQL.getUsername()) || username.equals("admin"))
             matcher.processOrder(orderSQL);
-        System.out.println("processed");
         return getResponse(username);
     }
 

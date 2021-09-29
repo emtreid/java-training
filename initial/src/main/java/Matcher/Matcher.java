@@ -116,8 +116,6 @@ public class Matcher {
         }
         for (OrderSQL previousOrderSQL : oppositeOrderSQLBook) {
             if (!orderSQL.getUsername().equals(previousOrderSQL.getUsername())) {
-                System.out.println("previous order:");
-                System.out.println(previousOrderSQL.toString());
                 // Create and push trade, update volumes of new and previous orderSQL, until one or both are exhausted
                 OrderSQL buyOrderSQL = orderSQL.getAction().equals("Buy") ? orderSQL : previousOrderSQL;
                 OrderSQL sellOrderSQL = orderSQL.getAction().equals("Sell") ? orderSQL : previousOrderSQL;

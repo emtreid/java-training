@@ -3,6 +3,7 @@ package Matcher.components.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,10 +34,11 @@ public class AccountService {
         List<Account> userAccounts = getAccountByUsername(username);
         if (userAccounts.size() == 0) {
             return false;
-        } else if (userAccounts.get(0).getPassword().equals(password)) {
-            return true;
         } else {
-            return false;
+            Account account = userAccounts.get(0);
+            String salt = account.getSalt();
+            String expectedHash = account.getPassword();
+            return Passwords.isExpectedPassword(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8), expectedHash.getBytes(StandardCharsets.UTF_8));
         }
     }
 
@@ -50,15 +52,11 @@ public class AccountService {
 //    }
 
     public void saveOrUpdate(Account account) {
-        System.out.println("saving account");
-        System.out.println(account.toString());
         List<Account> prevAccounts = getAccountByUsername(account.getUsername());
         if (prevAccounts.size() != 0) {
             delete(prevAccounts.get(0).getId());
-            System.out.println("deleted");
         }
         accountRepository.save(account);
-        System.out.println("currentLength" + getAllAccount().size());
     }
 
     public void delete(int id) {

@@ -26,7 +26,6 @@ public class TradeService {
     }
 
     public void saveOrUpdate(Trade trade) {
-        System.out.println(trade.toString());
         tradeRepository.save(trade);
     }
 

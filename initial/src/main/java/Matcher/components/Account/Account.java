@@ -6,8 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
+import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
+import java.util.Arrays;
 
 @Entity
 @Table
@@ -31,6 +35,10 @@ public class Account {
     String password;
 
     @Column
+    private @Getter
+    String salt;
+
+    @Column
     @Getter
     @Setter
     private int gbp;
@@ -40,9 +48,11 @@ public class Account {
     @Setter
     private int btc;
 
+
     public Account(String username, String password, int gbp, int btc) {
         this.username = username;
-        this.password = password;
+        salt = new String(Passwords.generateSalt(), StandardCharsets.UTF_8);
+        this.password = new String(Passwords.hash(password.toCharArray(), salt.getBytes(StandardCharsets.UTF_8)), StandardCharsets.UTF_8);
         this.gbp = gbp;
         this.btc = btc;
     }
@@ -101,7 +111,6 @@ public class Account {
     }
 
     public void creditAccount(Trade trade, long buyOrderPrice) {
-        System.out.println("crediting");
         if (trade.getBuyer().equals(username)) {
             long refund = trade.getVolume() * (buyOrderPrice - trade.getPrice());
             addGBP(refund);

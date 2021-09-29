@@ -2,6 +2,7 @@ package Matcher.controllers;
 
 import Matcher.DTO.LoginDTO;
 import Matcher.Matcher;
+import Matcher.components.Account.Account;
 import Matcher.components.Account.AccountService;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
